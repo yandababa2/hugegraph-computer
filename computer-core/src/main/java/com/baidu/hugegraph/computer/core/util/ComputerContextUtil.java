@@ -21,6 +21,7 @@ package com.baidu.hugegraph.computer.core.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.baidu.hugegraph.computer.core.allocator.Allocator;
 import com.baidu.hugegraph.computer.core.allocator.DefaultAllocator;
@@ -44,6 +45,10 @@ public class ComputerContextUtil {
         ComputerContext.initContext(config, graphFactory, allocator);
     }
 
+    public static void initContext(Properties properties) {
+        initContext(convertToMap(properties));
+    }
+
     public static Map<String, String> convertToMap(String... options) {
         if (options == null || options.length == 0) {
             throw new ComputerException("Config options can't be null " +
@@ -56,6 +61,19 @@ public class ComputerContextUtil {
         for (int i = 0; i < options.length; i += 2) {
             map.put(options[i], options[i + 1]);
         }
+        return map;
+    }
+
+    public static Map<String, String> convertToMap(Properties properties) {
+        if (properties == null) {
+            throw new ComputerException("Properties can't be null");
+        }
+
+        Map<String, String> map = new HashMap<>();
+        for (String key : properties.stringPropertyNames()) {
+            map.put(key, properties.getProperty(key));
+        }
+
         return map;
     }
 }
