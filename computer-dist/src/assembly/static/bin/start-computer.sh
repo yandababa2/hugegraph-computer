@@ -160,11 +160,10 @@ NEW_COMPUTER_CONF_PATH="${COPY_CONF_DIR}/$(basename "${COMPUTER_CONF_PATH}")"
 envsubst < "${COMPUTER_CONF_PATH}" > "${NEW_COMPUTER_CONF_PATH}"
 chmod 777 "${NEW_COMPUTER_CONF_PATH}"
 
-JVM_OPTIONS=${JVM_OPTIONS}
 if [ "${LOG4J_XML_PATH}" != "" ];then
-    JVM_OPTIONS="${JVM_OPTIONS} -Dlog4j.configurationFile=\"${LOG4J_XML_PATH}\""
+    LOG4j_CONF=-Dlog4j.configurationFile="${LOG4J_XML_PATH}"
 fi
 
-${JAVA} -Dname="hugegraph-computer" ${JVM_OPTIONS} -cp "${CP}" \
+${JAVA} -Dname="hugegraph-computer" ${JVM_OPTIONS} "${LOG4j_CONF}" -cp "${CP}" \
     com.baidu.hugegraph.computer.dist.HugeGraphComputer \
     "${NEW_COMPUTER_CONF_PATH}" ${ROLE} ${DRIVE}
