@@ -164,6 +164,12 @@ if [ "${LOG4J_XML_PATH}" != "" ];then
     LOG4j_CONF=-Dlog4j.configurationFile="${LOG4J_XML_PATH}"
 fi
 
-${JAVA} -Dname="hugegraph-computer" ${JVM_OPTIONS} "${LOG4j_CONF}" -cp "${CP}" \
-    com.baidu.hugegraph.computer.dist.HugeGraphComputer \
-    "${NEW_COMPUTER_CONF_PATH}" ${ROLE} ${DRIVE}
+if [ "${LOG4j_CONF}" != "" ]; then
+    ${JAVA} -Dname="hugegraph-computer" "${LOG4j_CONF}" ${JVM_OPTIONS} -cp \
+        "${CP}" com.baidu.hugegraph.computer.dist.HugeGraphComputer \
+        "${NEW_COMPUTER_CONF_PATH}" ${ROLE} ${DRIVE}
+else
+    ${JAVA} -Dname="hugegraph-computer" ${JVM_OPTIONS} -cp "${CP}" \
+        com.baidu.hugegraph.computer.dist.HugeGraphComputer \
+        "${NEW_COMPUTER_CONF_PATH}" ${ROLE} ${DRIVE}
+fi
