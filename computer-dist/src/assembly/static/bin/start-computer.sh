@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 set -e
 BIN_DIR=$(cd "$(dirname "$0")" && pwd -P)
 BASE_DIR=$(cd "${BIN_DIR}/.." && pwd -P)
