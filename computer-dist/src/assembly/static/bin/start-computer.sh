@@ -139,11 +139,26 @@ CP=$(find "${LIB_DIR}" -name "*.jar" | tr "\n" ":")
 
 CP="$JAR_FILE_PATH":${CP}
 
+# Download remote job JAR file.
+if [[ "${JOB_JAR_URI}" == http://* || "${JOB_JAR_URI}" == https://* ]]; then
+    mkdir -p "${BASE_DIR}/job"
+    echo "Downloading job JAR ${JOB_JAR_URI} to ${BASE_DIR}/job/"
+    wget -nv -P "${BASE_DIR}/job/" "${JOB_JAR_URI}"
+elif [[ "${JOB_JAR_URI}" != "" ]]; then
+    echo "Unsupported protocol for ${JOB_JAR_URI}"
+    exit 1
+fi
+
+JOB_JAR=$(find "${BASE_DIR}/job" -name "*.jar" | tr "\n" ":")
+if [[ "$JOB_JAR" != "" ]]; then
+    CP="${JOB_JAR}"$CP
+fi
+
 # Find Java
 if [ "$JAVA_HOME" = "" ]; then
     JAVA="java -server"
 else
-    JAVA=""$JAVA_HOME/bin/java" -server"
+    JAVA="$JAVA_HOME/bin/java -server"
 fi
 
 if [ ! -a "${CONF_DIR}" ];then
