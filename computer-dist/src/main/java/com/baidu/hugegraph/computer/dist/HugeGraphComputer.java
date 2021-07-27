@@ -27,7 +27,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 
 import com.baidu.hugegraph.computer.core.common.ComputerContext;
+import com.baidu.hugegraph.computer.core.common.SerialEnum;
+import com.baidu.hugegraph.computer.core.common.exception.ComputerException;
+import com.baidu.hugegraph.computer.core.graph.id.IdType;
+import com.baidu.hugegraph.computer.core.graph.value.ValueType;
 import com.baidu.hugegraph.computer.core.master.MasterService;
+import com.baidu.hugegraph.computer.core.network.message.MessageType;
 import com.baidu.hugegraph.computer.core.util.ComputerContextUtil;
 import com.baidu.hugegraph.computer.core.worker.WorkerService;
 import com.baidu.hugegraph.config.OptionSpace;
@@ -40,6 +45,25 @@ public class HugeGraphComputer {
 
     private static final String ROLE_MASTER = "master";
     private static final String ROLE_WORKER = "worker";
+
+    static {
+        loadClass();
+    }
+
+    /**
+     *  Some class must be load first, in order to invoke static method to init;
+     */
+    private static void loadClass() {
+        try {
+            Class.forName(IdType.class.getCanonicalName());
+            Class.forName(MessageType.class.getCanonicalName());
+            Class.forName(ValueType.class.getCanonicalName());
+        } catch (ClassNotFoundException e) {
+            LOG.error("Failed to init class: {}", e.getMessage(), e);
+            throw new ComputerException("Failed to init class: %s",
+                                        e.getMessage(), e);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         E.checkArgument(ArrayUtils.getLength(args) == 3,
