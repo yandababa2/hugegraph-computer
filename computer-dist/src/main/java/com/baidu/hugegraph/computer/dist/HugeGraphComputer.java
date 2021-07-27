@@ -52,13 +52,15 @@ public class HugeGraphComputer {
                         ROLE_WORKER.equals(role),
                         "The role must be either " +
                         "%s or %s", ROLE_MASTER, ROLE_WORKER);
-        register();
+        registerOptions();
         ComputerContext context = parseContext(args[0]);
         switch (role) {
             case ROLE_MASTER:
                 executeMasterService(context);
+                break;
             case ROLE_WORKER:
                 executeWorkerService(context);
+                break;
             default:
                 throw new IllegalArgumentException(
                           String.format("Unexpected role '%s'", role));
@@ -110,7 +112,7 @@ public class HugeGraphComputer {
         return context;
     }
 
-    private static void register() {
+    private static void registerOptions() {
         OptionSpace.register("computer",
                              "com.baidu.hugegraph.computer.core.config." +
                              "ComputerOptions");
