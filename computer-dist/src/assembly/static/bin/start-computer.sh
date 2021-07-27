@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -xe
 BIN_DIR=$(cd "$(dirname "$0")" && pwd -P)
 BASE_DIR=$(cd "${BIN_DIR}/.." && pwd -P)
 LIB_DIR=${BASE_DIR}/lib
@@ -17,9 +17,9 @@ ROLE_MASTER="master"
 ROLE_WORKER="worker"
 
 usage() {
-    echo "start-computer.sh <-c|--conf conf_file_path> <-a|--algorithm"
-    echo "algorithm_jar_path> [-l|--log4 log4_conf_path] <-d|--drive drive_type"
-    echo "(local|k8s|yarn)>"
+    echo "start-computer.sh <-c|--conf conf_file_path>"
+    echo "<-a|--algorithm algorithm_jar_path> [-l|--log4 log4_conf_path]"
+    echo "<-d|--drive drive_type(local|k8s|yarn)>"
 }
 
 if [ $# -lt 4 ];
@@ -139,11 +139,25 @@ CP=$(find "${LIB_DIR}" -name "*.jar" | tr "\n" ":")
 
 CP="$JAR_FILE_PATH":${CP}
 
+# Download remote job JAR file.
+if [[ "${JOB_JAR_URI}" == http://* || "${JOB_JAR_URI}" == https://* ]]; then
+    mkdir -p "${BASE_DIR}/job"
+    echo "Downloading job JAR ${JOB_JAR_URI} to ${BASE_DIR}/job/"
+    wget -nv -P "${BASE_DIR}/job/" "${JOB_JAR_URI}"
+    JOB_JAR=$(find "${BASE_DIR}/job" -name "*.jar" | tr "\n" ":")
+    if [[ "$JOB_JAR" != "" ]]; then
+        CP="${JOB_JAR}"$CP
+    fi
+elif [[ "${JOB_JAR_URI}" != "" ]]; then
+    echo "Unsupported protocol for ${JOB_JAR_URI}"
+    exit 1
+fi
+
 # Find Java
 if [ "$JAVA_HOME" = "" ]; then
     JAVA="java -server"
 else
-    JAVA=""$JAVA_HOME/bin/java" -server"
+    JAVA="$JAVA_HOME/bin/java -server"
 fi
 
 if [ ! -a "${CONF_DIR}" ];then
