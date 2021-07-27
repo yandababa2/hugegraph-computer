@@ -27,7 +27,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 
 import com.baidu.hugegraph.computer.core.common.ComputerContext;
-import com.baidu.hugegraph.computer.core.common.SerialEnum;
 import com.baidu.hugegraph.computer.core.common.exception.ComputerException;
 import com.baidu.hugegraph.computer.core.graph.id.IdType;
 import com.baidu.hugegraph.computer.core.graph.value.ValueType;
