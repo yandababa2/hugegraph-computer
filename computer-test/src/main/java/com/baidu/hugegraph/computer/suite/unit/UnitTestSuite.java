@@ -44,6 +44,7 @@ import com.baidu.hugegraph.computer.core.sort.sorting.SortingTestSuite;
 import com.baidu.hugegraph.computer.core.store.StoreTestSuite;
 import com.baidu.hugegraph.computer.core.util.UtilTestSuite;
 import com.baidu.hugegraph.computer.core.worker.WorkerTestSuite;
+import com.baidu.hugegraph.computer.dist.ComputerDistTestSuite;
 import com.baidu.hugegraph.computer.driver.DriverTestSuite;
 import com.baidu.hugegraph.computer.k8s.K8sTestSuite;
 import com.baidu.hugegraph.config.OptionSpace;
@@ -68,6 +69,8 @@ import com.baidu.hugegraph.util.Log;
     SortingTestSuite.class,
     SenderTestSuite.class,
     ReceiverTestSuite.class,
+    ComputeTestSuite.class,
+    ComputerDistTestSuite.class,
     ComputeTestSuite.class,
     DriverTestSuite.class,
     K8sTestSuite.class
