@@ -6,7 +6,7 @@ LIB_DIR=${BASE_DIR}/lib
 CONF_DIR="${BASE_DIR}/conf"
 
 COMPUTER_CONF_PATH="${COMPUTER_CONF_PATH}"
-LOG4J_XML_PATH="${LOG4J_XML_PATH}"
+LOG4J_CONF_PATH="${LOG4J_CONF_PATH}"
 JAR_FILE_PATH="${JAR_FILE_PATH}"
 DRIVE=
 K8S_DRIVE="k8s"
@@ -62,7 +62,7 @@ parse_opts() {
             -l|--log4)
                 check_empty "log conf file not be empty" $2
                 check_file_readable "file $2 not be read permission" $2
-                LOG4J_XML_PATH=$2
+                LOG4J_CONF_PATH=$2
                 shift 2 ;;
             -a|--algorithm)
                 check_empty "algorithm jar file not be empty" $2
@@ -106,10 +106,12 @@ parse_opts() {
 
 parse_opts $*
 
+echo "************************************"
 echo "COMPUTER_CONF_PATH=${COMPUTER_CONF_PATH}"
-echo "LOG4J_XML_PATH=${LOG4J_XML_PATH}"
+echo "LOG4J_CONF_PATH=${LOG4J_CONF_PATH}"
 echo "JAR_FILE_PATH=${JAR_FILE_PATH}"
 echo "DRIVE=${DRIVE}"
+echo "************************************"
 
 if [ "${JAR_FILE_PATH}" = "" ]; then
     echo "graph algorithm jar file missed";
@@ -174,8 +176,8 @@ NEW_COMPUTER_CONF_PATH="${COPY_CONF_DIR}/$(basename "${COMPUTER_CONF_PATH}")"
 envsubst < "${COMPUTER_CONF_PATH}" > "${NEW_COMPUTER_CONF_PATH}"
 chmod 777 "${NEW_COMPUTER_CONF_PATH}"
 
-if [ "${LOG4J_XML_PATH}" != "" ];then
-    LOG4j_CONF=-Dlog4j.configurationFile="${LOG4J_XML_PATH}"
+if [ "${LOG4J_CONF_PATH}" != "" ];then
+    LOG4j_CONF=-Dlog4j.configurationFile="${LOG4J_CONF_PATH}"
 fi
 
 if [ "${LOG4j_CONF}" != "" ]; then
