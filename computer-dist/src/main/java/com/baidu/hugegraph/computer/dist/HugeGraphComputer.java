@@ -19,6 +19,7 @@
 package com.baidu.hugegraph.computer.dist;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
@@ -38,9 +39,9 @@ import com.baidu.hugegraph.config.OptionSpace;
 import com.baidu.hugegraph.util.E;
 import com.baidu.hugegraph.util.Log;
 
-public class HugeGraphComputerServer {
+public class HugeGraphComputer {
 
-    private static final Logger LOG = Log.logger(HugeGraphComputerServer.class);
+    private static final Logger LOG = Log.logger(HugeGraphComputer.class);
 
     private static final String ROLE_MASTER = "master";
     private static final String ROLE_WORKER = "worker";
@@ -100,8 +101,8 @@ public class HugeGraphComputerServer {
 
         @Override
         public void uncaughtException(Thread t, Throwable e) {
-            HugeGraphComputerServer.LOG.error("Failed to run service on {}, {}",
-                                              t, e.getMessage(), e);
+            HugeGraphComputer.LOG.error("Failed to run service on {}, {}",
+                                        t, e.getMessage(), e);
             if (handler != null) {
                 handler.uncaughtException(t, e);
             }
@@ -110,27 +111,33 @@ public class HugeGraphComputerServer {
 
     private static void executeWorkerService(ComputerContext context) {
         WorkerService workerService = null;
+        ShutdownHook hook = new ShutdownHook();
         try {
             workerService = new WorkerService();
+            hook.hook(workerService);
             workerService.init(context.config());
             workerService.execute();
         } finally {
             if (workerService != null) {
                 workerService.close();
             }
+            hook.unHook();
         }
     }
 
     private static void executeMasterService(ComputerContext context) {
         MasterService masterService = null;
+        ShutdownHook shutdownHook = new ShutdownHook();
         try {
             masterService = new MasterService();
+            shutdownHook.hook(masterService);
             masterService.init(context.config());
             masterService.execute();
         } finally {
             if (masterService != null) {
                 masterService.close();
             }
+            shutdownHook.unHook();
         }
     }
 
@@ -151,5 +158,37 @@ public class HugeGraphComputerServer {
                              "ComputerOptions");
         OptionSpace.register("computer-rpc",
                              "com.baidu.hugegraph.config.RpcOptions");
+    }
+
+    protected static class ShutdownHook extends Thread {
+
+        private static final Logger LOG = Log.logger(ShutdownHook.class);
+
+        private Thread hook;
+
+        public boolean hook(Closeable hook) {
+            if (hook == null) {
+                return false;
+            }
+
+            this.hook = new Thread(() -> {
+                try {
+                    hook.close();
+                } catch (IOException e) {
+                    LOG.error("Failed to execute Shutdown hook: {}",
+                              e.getMessage(), e);
+                }
+            });
+            Runtime.getRuntime().addShutdownHook(this.hook);
+            return true;
+        }
+
+        public boolean unHook() {
+            if (this.hook == null) {
+                return false;
+            }
+
+            return Runtime.getRuntime().removeShutdownHook(this.hook);
+        }
     }
 }
