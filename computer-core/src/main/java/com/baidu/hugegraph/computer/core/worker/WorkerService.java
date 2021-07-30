@@ -143,6 +143,7 @@ public class WorkerService implements Closeable {
      * {@link #init(Config)}.
      */
     public synchronized void close() {
+        LOG.info("Ready to closed worker.");
         this.checkInited();
         if (this.closed) {
             LOG.info("{} WorkerService had closed before", this);

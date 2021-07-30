@@ -118,6 +118,7 @@ public class MasterService implements Closeable {
      * {@link #init(Config)}.
      */
     public synchronized void close() {
+        LOG.info("Ready to closed master.");
         this.checkInited();
         if (this.closed) {
             LOG.info("{} MasterService had closed before", this);
