@@ -110,33 +110,24 @@ public class HugeGraphComputer {
     }
 
     private static void executeWorkerService(ComputerContext context) {
-        WorkerService workerService = null;
+
         ShutdownHook hook = new ShutdownHook();
-        try {
-            workerService = new WorkerService();
+        try (WorkerService workerService= new WorkerService()) {
             hook.hook(workerService);
             workerService.init(context.config());
             workerService.execute();
         } finally {
-            if (workerService != null) {
-                workerService.close();
-            }
             hook.unHook();
         }
     }
 
     private static void executeMasterService(ComputerContext context) {
-        MasterService masterService = null;
         ShutdownHook shutdownHook = new ShutdownHook();
-        try {
-            masterService = new MasterService();
+        try (MasterService masterService = new MasterService()) {
             shutdownHook.hook(masterService);
             masterService.init(context.config());
             masterService.execute();
         } finally {
-            if (masterService != null) {
-                masterService.close();
-            }
             shutdownHook.unHook();
         }
     }
@@ -160,8 +151,7 @@ public class HugeGraphComputer {
                              "com.baidu.hugegraph.config.RpcOptions");
     }
 
-    protected static class ShutdownHook extends Thread {
-
+    protected static class ShutdownHook {
         private static final Logger LOG = Log.logger(ShutdownHook.class);
 
         private Thread hook;
