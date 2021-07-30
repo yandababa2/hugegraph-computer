@@ -112,10 +112,18 @@ public class HugeGraphComputer {
     private static void executeWorkerService(ComputerContext context) {
 
         ShutdownHook hook = new ShutdownHook();
-        try (WorkerService workerService= new WorkerService()) {
+        try (WorkerService workerService = new WorkerService()) {
             hook.hook(workerService);
             workerService.init(context.config());
             workerService.execute();
+
+            try {
+                Thread.sleep(Long.parseLong(
+                             System.getProperty("closeSleepMill")));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         } finally {
             hook.unHook();
         }
@@ -127,6 +135,14 @@ public class HugeGraphComputer {
             shutdownHook.hook(masterService);
             masterService.init(context.config());
             masterService.execute();
+
+            try {
+                Thread.sleep(Long.parseLong(
+                             System.getProperty("closeSleepMill")));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         } finally {
             shutdownHook.unHook();
         }

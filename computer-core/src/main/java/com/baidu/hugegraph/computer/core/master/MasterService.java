@@ -173,6 +173,9 @@ public class MasterService implements Closeable {
             // TODO: Get superstepStat from bsp service.
             superstepStat = null;
         }
+
+        LOG.info("Inputstep :{}", superstepStat);
+
         E.checkState(superstep <= this.maxSuperStep,
                      "The superstep {} can't be > maxSuperStep {}",
                      superstep, this.maxSuperStep);
@@ -216,8 +219,8 @@ public class MasterService implements Closeable {
             this.managers.afterSuperstep(this.config, superstep);
             this.bsp4Master.masterStepDone(superstep, superstepStat);
 
-            LOG.info("{} MasterService superstep {} finished",
-                     this, superstep);
+            LOG.info("{} MasterService superstep {} finished, superstepStat:{}",
+                     this, superstep, superstepStat);
         }
 
         // Step 4: Output superstep for outputting results.
