@@ -1,5 +1,6 @@
 package com.baidu.hugegraph.computer.dist;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -108,5 +109,14 @@ public class HugeGraphComputerTest {
             }
         }
         return error;
+    }
+
+    public static void main(String[] _) throws IOException,
+                                               ClassNotFoundException {
+        String masterConfPath = HugeGraphComputerTest.class.getResource(
+                "/computer-master.properties").getPath();
+        String[] args = {masterConfPath, "master", "local"};
+        HugeGraphComputer.main(args);
+        System.out.println("end....");
     }
 }

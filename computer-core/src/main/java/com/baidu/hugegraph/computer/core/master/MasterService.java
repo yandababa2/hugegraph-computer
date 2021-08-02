@@ -59,8 +59,8 @@ public class MasterService implements Closeable {
     private final ComputerContext context;
     private final Managers managers;
 
-    private boolean inited;
-    private boolean closed;
+    private volatile boolean inited;
+    private volatile boolean closed;
     private Config config;
     private Bsp4Master bsp4Master;
     private ContainerInfo masterInfo;
@@ -117,7 +117,7 @@ public class MasterService implements Closeable {
      * Stop the the master service. Stop the managers created in
      * {@link #init(Config)}.
      */
-    public synchronized void close() {
+    public void close() {
         LOG.info("Ready to closed master.");
         this.checkInited();
         if (this.closed) {
