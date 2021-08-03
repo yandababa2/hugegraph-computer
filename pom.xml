@@ -43,6 +43,7 @@
         <module>computer-driver</module>
         <module>computer-yarn</module>
         <module>computer-k8s</module>
+        <module>computer-k8s-operator</module>
         <module>computer-dist</module>
         <module>computer-test</module>
     </modules>
@@ -52,7 +53,7 @@
             <dependency>
                 <groupId>com.baidu.hugegraph</groupId>
                 <artifactId>hugegraph-common</artifactId>
-                <version>1.8.8</version>
+                <version>1.8.9</version>
             </dependency>
             <dependency>
                 <groupId>com.baidu.hugegraph</groupId>

@@ -43,6 +43,7 @@ import com.baidu.hugegraph.computer.core.input.MasterInputManager;
 import com.baidu.hugegraph.computer.core.manager.Managers;
 import com.baidu.hugegraph.computer.core.network.TransportUtil;
 import com.baidu.hugegraph.computer.core.rpc.MasterRpcManager;
+import com.baidu.hugegraph.computer.core.util.ShutdownHook;
 import com.baidu.hugegraph.computer.core.worker.WorkerStat;
 import com.baidu.hugegraph.util.E;
 import com.baidu.hugegraph.util.Log;
@@ -62,24 +63,31 @@ public class MasterService implements Closeable {
     private volatile boolean inited;
     private volatile boolean closed;
     private Config config;
-    private Bsp4Master bsp4Master;
+    private volatile Bsp4Master bsp4Master;
     private ContainerInfo masterInfo;
     private List<ContainerInfo> workers;
     private int maxSuperStep;
     private MasterComputation masterComputation;
 
+    private volatile ShutdownHook shutdownHook;
+    private volatile Thread serviceThread;
+
     public MasterService() {
         this.context = ComputerContext.instance();
         this.managers = new Managers();
         this.closed = false;
+        this.shutdownHook = new ShutdownHook();
     }
 
     /**
      * Init master service, create the managers used by master.
      */
-    public synchronized void init(Config config) {
+    public void init(Config config) {
         E.checkArgument(!this.inited, "The %s has been initialized", this);
         LOG.info("{} Start to initialize master", this);
+
+        this.serviceThread = Thread.currentThread();
+        this.registerShutdownHook();
 
         this.config = config;
 
@@ -113,12 +121,29 @@ public class MasterService implements Closeable {
         this.inited = true;
     }
 
+    private void stopServiceThread() {
+        if (this.serviceThread == null) {
+            return;
+        }
+
+        try {
+            this.serviceThread.interrupt();
+        } catch (Throwable ignore) {
+        }
+    }
+
+    private void registerShutdownHook() {
+        this.shutdownHook.hook(() -> {
+            this.stopServiceThread();
+            this.cleanAndCloseBsp4();
+        });
+    }
+
     /**
      * Stop the the master service. Stop the managers created in
      * {@link #init(Config)}.
      */
     public void close() {
-        LOG.info("Ready to closed master.");
         this.checkInited();
         if (this.closed) {
             LOG.info("{} MasterService had closed before", this);
@@ -131,11 +156,20 @@ public class MasterService implements Closeable {
 
         this.managers.closeAll(this.config);
 
-        this.bsp4Master.clean();
-        this.bsp4Master.close();
+        this.cleanAndCloseBsp4();
+        this.shutdownHook.unHook();
 
         this.closed = true;
         LOG.info("{} MasterService closed", this);
+    }
+
+    private void cleanAndCloseBsp4() {
+        if (this.bsp4Master == null) {
+            return;
+        }
+
+        this.bsp4Master.clean();
+        this.bsp4Master.close();
     }
 
     /**
@@ -143,7 +177,7 @@ public class MasterService implements Closeable {
      * then execute the superstep iteration.
      * After the superstep iteration, output the result.
      */
-    public synchronized void execute() {
+    public void execute() {
         this.checkInited();
 
         LOG.info("{} MasterService execute", this);
@@ -174,9 +208,6 @@ public class MasterService implements Closeable {
             // TODO: Get superstepStat from bsp service.
             superstepStat = null;
         }
-
-        LOG.info("Inputstep :{}", superstepStat);
-
         E.checkState(superstep <= this.maxSuperStep,
                      "The superstep {} can't be > maxSuperStep {}",
                      superstep, this.maxSuperStep);
@@ -220,8 +251,8 @@ public class MasterService implements Closeable {
             this.managers.afterSuperstep(this.config, superstep);
             this.bsp4Master.masterStepDone(superstep, superstepStat);
 
-            LOG.info("{} MasterService superstep {} finished, superstepStat:{}",
-                     this, superstep, superstepStat);
+            LOG.info("{} MasterService superstep {} finished",
+                     this, superstep);
         }
 
         // Step 4: Output superstep for outputting results.
@@ -308,7 +339,8 @@ public class MasterService implements Closeable {
         SuperstepStat superstepStat = SuperstepStat.from(workerStats);
         this.bsp4Master.masterStepDone(Constants.INPUT_SUPERSTEP,
                                        superstepStat);
-        LOG.info("{} MasterService inputstep finished", this);
+        LOG.info("{} MasterService inputstep finished with superstat {}",
+                 this, superstepStat);
         return superstepStat;
     }
 

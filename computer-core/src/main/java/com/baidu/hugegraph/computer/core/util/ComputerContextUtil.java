@@ -66,6 +66,10 @@ public class ComputerContextUtil {
         initContext(convertToMap(properties));
     }
 
+    public static void initContext(Properties properties) {
+        initContext(convertToMap(properties));
+    }
+
     public static Map<String, String> convertToMap(String... options) {
         if (options == null || options.length == 0) {
             throw new ComputerException("Config options can't be null " +

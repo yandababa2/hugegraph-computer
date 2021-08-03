@@ -1,6 +1,5 @@
 package com.baidu.hugegraph.computer.dist;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -86,19 +85,6 @@ public class HugeGraphComputerTest {
         Assert.assertTrue(isRun.get());
     }
 
-    @Test
-    public void testShutdownHook() {
-        HugeGraphComputer.ShutdownHook hook =
-                          new HugeGraphComputer.ShutdownHook();
-        Assert.assertFalse(hook.hook(null));
-        Assert.assertFalse(hook.unHook());
-
-        Assert.assertTrue(hook.hook(() -> {
-        }));
-        Assert.assertTrue(hook.unHook());
-        Assert.assertFalse(hook.unHook());
-    }
-
     private boolean existError(Throwable[] exceptions) {
         boolean error = false;
         for (Throwable e : exceptions) {
@@ -109,14 +95,5 @@ public class HugeGraphComputerTest {
             }
         }
         return error;
-    }
-
-    public static void main(String[] _) throws IOException,
-                                               ClassNotFoundException {
-        String masterConfPath = HugeGraphComputerTest.class.getResource(
-                "/computer-master.properties").getPath();
-        String[] args = {masterConfPath, "master", "local"};
-        HugeGraphComputer.main(args);
-        System.out.println("end....");
     }
 }
