@@ -205,4 +205,9 @@ public class ListValue<T extends Value<?>> implements Value<ListValue<T>> {
     public String toString() {
         return this.values.toString();
     }
+
+    @Override
+    public Object object() {
+        return this.values;
+    }
 }
