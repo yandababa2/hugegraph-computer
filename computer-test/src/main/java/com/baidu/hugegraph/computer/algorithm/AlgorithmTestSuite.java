@@ -35,8 +35,8 @@ import com.baidu.hugegraph.config.OptionSpace;
     PageRankTest.class,
     DegreeCentralityTest.class,
     WccTest.class,
-    RingsDetectionTest.class,
-    RingsDetectionWithFilterTest.class
+    RingsDetectionWithFilterTest.class,
+    RingsDetectionTest.class
 })
 public class AlgorithmTestSuite {
 
