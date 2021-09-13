@@ -79,8 +79,7 @@ public class UnitTestBase {
                                                        .build();
 
     protected static void clearAll() {
-        clearData();
-        clearSchema();
+        CLIENT.graphs().clear(GRAPH, "I'm sure to delete all data");
     }
 
     protected static void clearData() {
