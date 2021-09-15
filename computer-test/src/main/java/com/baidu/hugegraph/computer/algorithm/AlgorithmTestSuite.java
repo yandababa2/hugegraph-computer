@@ -23,16 +23,24 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import com.baidu.hugegraph.computer.algorithm.centrality.closeness.ClosenessCentralityTest;
 import com.baidu.hugegraph.computer.algorithm.centrality.degree.DegreeCentralityTest;
 import com.baidu.hugegraph.computer.algorithm.centrality.pagerank.PageRankTest;
+import com.baidu.hugegraph.computer.algorithm.community.trianglecount.TriangleCountTest;
 import com.baidu.hugegraph.computer.algorithm.community.wcc.WccTest;
+import com.baidu.hugegraph.computer.algorithm.path.rings.RingsDetectionTest;
+import com.baidu.hugegraph.computer.algorithm.path.rings.RingsDetectionWithFilterTest;
 import com.baidu.hugegraph.config.OptionSpace;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     PageRankTest.class,
     DegreeCentralityTest.class,
-    WccTest.class
+    WccTest.class,
+    TriangleCountTest.class,
+    RingsDetectionWithFilterTest.class,
+    RingsDetectionTest.class,
+    ClosenessCentralityTest.class,
 })
 public class AlgorithmTestSuite {
 

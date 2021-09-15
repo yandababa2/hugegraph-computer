@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.baidu.hugegraph.computer.core.combiner.OverwriteCombiner;
 import com.baidu.hugegraph.computer.core.graph.partition.HashPartitioner;
-import com.baidu.hugegraph.computer.core.input.DefaultInputFilter;
+import com.baidu.hugegraph.computer.core.input.filter.DefaultInputFilter;
 import com.baidu.hugegraph.computer.core.master.DefaultMasterComputation;
 import com.baidu.hugegraph.computer.core.network.TransportConf;
 import com.baidu.hugegraph.computer.core.network.netty.NettyTransportProvider;
@@ -154,7 +154,7 @@ public class ComputerOptions extends OptionHolder {
                     "targetId to identify it.",
                     allowValues("SINGLE", "SINGLE_PER_LABEL", "MULTIPLE"),
                     EdgeFrequency::valueOf,
-                    "SINGLE"
+                    "MULTIPLE"
             );
 
     public static final ConfigOption<Integer> INPUT_MAX_EDGES_IN_ONE_VERTEX =
@@ -262,15 +262,6 @@ public class ComputerOptions extends OptionHolder {
             new ConfigOption<>(
                     "output.retry_interval",
                     "The retry interval when output failed",
-                    positiveInt(),
-                    10
-            );
-
-    public static final ConfigOption<Integer> VERTEX_AVERAGE_DEGREE =
-            new ConfigOption<>(
-                    "computer.vertex_average_degree",
-                    "The average degree of a vertex, it represents the " +
-                    "average number of adjacent edges per vertex",
                     positiveInt(),
                     10
             );
@@ -726,7 +717,7 @@ public class ComputerOptions extends OptionHolder {
                     "hgkv.max_file_size",
                     "The max number of bytes in each hgkv-file.",
                     positiveInt(),
-                    Bytes.GB * 4
+                    Bytes.GB * 2
             );
 
     public static final ConfigOption<Long> HGKV_DATABLOCK_SIZE =
@@ -743,7 +734,7 @@ public class ComputerOptions extends OptionHolder {
                     "The max number of files to merge at one time.",
                     positiveInt(),
                     // TODO: test if the default value is appropriate.
-                    200
+                    10
             );
 
     public static final ConfigOption<String> HGKV_TEMP_DIR =
@@ -761,5 +752,15 @@ public class ComputerOptions extends OptionHolder {
                     "The max number of bytes in each segment of value-file.",
                     positiveInt(),
                     Bytes.GB
+            );
+
+    public static final ConfigOption<String> RINGS_DETECTION_FILTER =
+            new ConfigOption<>(
+                    "rings.property_filter",
+                    "The property filter of rings-detection, used to " +
+                    "calculate vertex or edge properties and determine " +
+                    "whether continue detection.",
+                    disallowEmpty(),
+                    "{}"
             );
 }

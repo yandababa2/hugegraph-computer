@@ -118,7 +118,7 @@ public class WriteBufferTest extends UnitTestBase {
         Properties properties = graphFactory.createProperties();
         properties.put("name", BytesId.of("marko"));
         properties.put("age", new IntValue(18));
-        properties.put("city", new ListValue<>(ValueType.ID_VALUE,
+        properties.put("city", new ListValue<>(ValueType.ID,
                                ImmutableList.of(BytesId.of("wuhan"),
                                                 BytesId.of("xian"))));
         vertex.properties(properties);
@@ -166,7 +166,7 @@ public class WriteBufferTest extends UnitTestBase {
         buffer = new WriteBuffer(ComputerContext.instance(), 100, 110);
         buffer.writeEdges(vertex);
         long position2 = buffer.output().position();
-        Assert.assertGt(position1, position2);
+        Assert.assertGte(position1, position2);
 
         UnitTestBase.updateOptions(
             ComputerOptions.INPUT_EDGE_FREQ, "MULTIPLE"
@@ -175,7 +175,7 @@ public class WriteBufferTest extends UnitTestBase {
         buffer = new WriteBuffer(ComputerContext.instance(), 100, 110);
         buffer.writeEdges(vertex);
         long position3 = buffer.output().position();
-        Assert.assertGt(position2, position3);
+        Assert.assertGte(position2, position3);
     }
 
     @Test

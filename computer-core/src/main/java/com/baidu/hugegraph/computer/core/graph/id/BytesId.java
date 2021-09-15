@@ -98,7 +98,7 @@ public class BytesId implements Id {
 
     @Override
     public ValueType valueType() {
-        return ValueType.ID_VALUE;
+        return ValueType.ID;
     }
 
     @Override
@@ -198,5 +198,10 @@ public class BytesId implements Id {
     @Override
     public String toString() {
         return this.asObject().toString();
+    }
+
+    @Override
+    public Object object() {
+        return this.bytes;
     }
 }

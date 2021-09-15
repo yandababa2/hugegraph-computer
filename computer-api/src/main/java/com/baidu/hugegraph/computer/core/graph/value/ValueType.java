@@ -31,10 +31,12 @@ public enum ValueType implements SerialEnum {
     LONG(4, 8, "long"),
     FLOAT(5, 4, "float"),
     DOUBLE(6, 8, "double"),
-    ID_VALUE(20, -1, "id"),
-    ID_VALUE_LIST(30, -1, "idlist"),
-    ID_VALUE_LIST_LIST(40, -1, "idlistlist"),
-    LIST_VALUE(80, -1, "list");
+    STRING(7, -1, "string"),
+    ID(20, -1, "id"),
+    ID_LIST(21, -1, "idList"),
+    ID_LIST_LIST(22, -1, "idListList"),
+    LIST_VALUE(30, -1, "list"),
+    MAP_VALUE(31, -1, "map");
 
     private final byte code;
     // Length in bytes if it's a fixed value type, -1 means not fixed.
