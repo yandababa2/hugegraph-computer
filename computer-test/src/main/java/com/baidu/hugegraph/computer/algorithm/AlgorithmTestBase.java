@@ -34,6 +34,7 @@ import com.baidu.hugegraph.computer.core.master.MasterService;
 import com.baidu.hugegraph.computer.core.util.ComputerContextUtil;
 import com.baidu.hugegraph.computer.core.worker.MockWorkerService;
 import com.baidu.hugegraph.computer.core.worker.WorkerService;
+import com.baidu.hugegraph.computer.k8s.util.KubeUtil;
 import com.baidu.hugegraph.computer.suite.unit.UnitTestBase;
 import com.baidu.hugegraph.config.RpcOptions;
 import com.baidu.hugegraph.testutil.Assert;
@@ -55,7 +56,7 @@ public class AlgorithmTestBase extends UnitTestBase {
                 params.put(RpcOptions.RPC_REMOTE_URL.name(),
                            "127.0.0.1:8090");
                 params.put(ComputerOptions.JOB_ID.name(),
-                           "local_002");
+                           KubeUtil.genJobId(algorithmParams));
                 params.put(ComputerOptions.JOB_WORKERS_COUNT.name(),
                            "1");
                 params.put(ComputerOptions.TRANSPORT_SERVER_PORT.name(),
@@ -99,7 +100,7 @@ public class AlgorithmTestBase extends UnitTestBase {
                 params.put(RpcOptions.RPC_SERVER_PORT.name(),
                            "8090");
                 params.put(ComputerOptions.JOB_ID.name(),
-                           "local_002");
+                           KubeUtil.genJobId(algorithmParams));
                 params.put(ComputerOptions.JOB_WORKERS_COUNT.name(),
                            "1");
                 params.put(ComputerOptions.BSP_REGISTER_TIMEOUT.name(),

@@ -103,7 +103,7 @@ public class KubeUtil {
     }
 
     public static String genJobId(String algorithmName) {
-        return algorithmName + "-" + Utils.randomString(10);
+        return algorithmName + "-" + System.currentTimeMillis();
     }
 
     public static String imageUrl(String repository, String algorithmName,
