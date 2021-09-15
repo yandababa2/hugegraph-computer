@@ -23,70 +23,59 @@ import java.io.IOException;
 
 import com.baidu.hugegraph.computer.core.io.RandomAccessInput;
 import com.baidu.hugegraph.computer.core.io.RandomAccessOutput;
-import com.baidu.hugegraph.util.E;
 
-public class NullValue implements Value<NullValue> {
+public class StringValue implements Value<StringValue> {
 
-    private static final NullValue INSTANCE = new NullValue();
+    private String value;
 
-    private NullValue() {
+    public StringValue() {
     }
 
-    /*
-     * Returns the single instance of this class.
-     */
-    public static NullValue get() {
-        return INSTANCE;
+    public StringValue(String value) {
+        this.value = value;
     }
 
     @Override
     public ValueType valueType() {
-        return ValueType.NULL;
+        return ValueType.STRING;
     }
 
     @Override
-    public void assign(Value<NullValue> other) {
+    public void assign(Value<StringValue> other) {
         this.checkAssign(other);
+        this.value = ((StringValue) other).value;
     }
 
     @Override
-    public NullValue copy() {
-        return this;
-    }
-
-    @Override
-    public void write(RandomAccessOutput out) throws IOException {
-        // pass
+    public Value<StringValue> copy() {
+        return new StringValue(this.value);
     }
 
     @Override
     public void read(RandomAccessInput in) throws IOException {
-        // pass
+        this.value = in.readUTF();
     }
 
     @Override
-    public int compareTo(NullValue obj) {
-        E.checkArgumentNotNull(obj, "The compare argument can't be null");
-        return 0;
+    public void write(RandomAccessOutput out) throws IOException {
+        out.writeUTF(this.value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj == INSTANCE || obj instanceof NullValue;
+    public int compareTo(StringValue other) {
+        return this.value.compareTo(other.value);
     }
 
-    @Override
-    public int hashCode() {
-        return 0;
+    public String value() {
+        return this.value;
     }
 
-    @Override
-    public String toString() {
-        return "<null>";
+    public void value(String value) {
+        this.value = value;
     }
 
     @Override
     public Object object() {
-        return null;
+        return this.value;
     }
 }
