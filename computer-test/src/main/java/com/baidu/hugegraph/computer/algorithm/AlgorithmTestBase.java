@@ -82,6 +82,9 @@ public class AlgorithmTestBase extends UnitTestBase {
             } catch (Throwable e) {
                 log.error("Failed to start worker", e);
                 exceptions[0] = e;
+                while (countDownLatch.getCount() > 0) {
+                    countDownLatch.countDown();
+                }
             } finally {
                 if (workerService != null) {
                     workerService.close();
@@ -125,6 +128,9 @@ public class AlgorithmTestBase extends UnitTestBase {
             } catch (Throwable e) {
                 log.error("Failed to start master", e);
                 exceptions[1] = e;
+                while (countDownLatch.getCount() > 0) {
+                    countDownLatch.countDown();
+                }
             } finally {
                 /*
                  * It must close the service first. The pool will be shutdown
