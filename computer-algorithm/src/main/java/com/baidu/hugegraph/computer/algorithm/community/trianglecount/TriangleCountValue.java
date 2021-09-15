@@ -92,4 +92,9 @@ public class TriangleCountValue implements Value<TriangleCountValue> {
     public String toString() {
         return JsonUtil.toJson(this);
     }
+
+    @Override
+    public Object object() {
+        throw new NotSupportedException();
+    }
 }
