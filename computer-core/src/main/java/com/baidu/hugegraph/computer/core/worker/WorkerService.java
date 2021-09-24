@@ -308,12 +308,11 @@ public class WorkerService implements Closeable {
         FileManager fileManager = new FileManager();
         this.managers.add(fileManager);
 
-        SortManager sortManager = new SortManager(this.context);
-        this.managers.add(sortManager);
+        SortManager recvSortManager = new SortManager(this.context);
+        this.managers.add(recvSortManager);
 
         MessageRecvManager recvManager = new MessageRecvManager(this.context,
-                                                                fileManager,
-                                                                sortManager);
+                                         fileManager, recvSortManager);
         this.managers.add(recvManager);
 
         ConnectionManager connManager = new TransportConnectionManager();
@@ -326,8 +325,12 @@ public class WorkerService implements Closeable {
                                                                 this.context);
         this.managers.add(clientManager);
 
+        SortManager sendSortManager = new SortManager(this.context);
+        this.managers.add(sendSortManager);
+
         MessageSendManager sendManager = new MessageSendManager(this.context,
-                                         sortManager, clientManager.sender());
+                                         sendSortManager,
+                                         clientManager.sender());
         this.managers.add(sendManager);
 
         WorkerInputManager inputManager = new WorkerInputManager(this.context,

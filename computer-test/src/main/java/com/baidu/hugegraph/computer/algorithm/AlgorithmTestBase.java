@@ -41,9 +41,10 @@ import com.baidu.hugegraph.util.Log;
 
 public class AlgorithmTestBase extends UnitTestBase {
 
+    public static final Logger LOG = Log.logger(AlgorithmTestBase.class);
+
     public static void runAlgorithm(String algorithmParams, String ... options)
-                       throws InterruptedException {
-        final Logger log = Log.logger(AlgorithmTestBase.class);
+                                    throws InterruptedException {
         ExecutorService pool = Executors.newFixedThreadPool(2);
         CountDownLatch countDownLatch = new CountDownLatch(2);
         Throwable[] exceptions = new Throwable[2];
@@ -68,19 +69,19 @@ public class AlgorithmTestBase extends UnitTestBase {
                            "10");
                 params.put(ComputerOptions.ALGORITHM_PARAMS_CLASS.name(),
                            algorithmParams);
-                Config config = ComputerContextUtil.initContext(params);
                 if (options != null) {
                     for (int i = 0; i < options.length; i += 2) {
                         params.put(options[i], options[i + 1]);
                     }
                 }
+                Config config = ComputerContextUtil.initContext(params);
                 workerService = new MockWorkerService();
 
                 Thread.sleep(2000L);
                 workerService.init(config);
                 workerService.execute();
             } catch (Throwable e) {
-                log.error("Failed to start worker", e);
+                LOG.error("Failed to start worker", e);
                 exceptions[0] = e;
                 while (countDownLatch.getCount() > 0) {
                     countDownLatch.countDown();
@@ -126,7 +127,7 @@ public class AlgorithmTestBase extends UnitTestBase {
                 masterService.init(config);
                 masterService.execute();
             } catch (Throwable e) {
-                log.error("Failed to start master", e);
+                LOG.error("Failed to start master", e);
                 exceptions[1] = e;
                 while (countDownLatch.getCount() > 0) {
                     countDownLatch.countDown();

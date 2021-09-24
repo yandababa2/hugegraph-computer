@@ -28,8 +28,6 @@ import java.util.UUID;
 import com.baidu.hugegraph.computer.core.common.Constants;
 import com.baidu.hugegraph.computer.core.common.SerialEnum;
 import com.baidu.hugegraph.computer.core.common.exception.ComputerException;
-import com.baidu.hugegraph.computer.core.config.ComputerOptions;
-import com.baidu.hugegraph.computer.core.config.Config;
 import com.baidu.hugegraph.computer.core.graph.edge.DefaultEdge;
 import com.baidu.hugegraph.computer.core.graph.edge.DefaultEdges;
 import com.baidu.hugegraph.computer.core.graph.edge.Edge;
@@ -46,6 +44,7 @@ import com.baidu.hugegraph.computer.core.graph.value.IdListList;
 import com.baidu.hugegraph.computer.core.graph.value.IntValue;
 import com.baidu.hugegraph.computer.core.graph.value.ListValue;
 import com.baidu.hugegraph.computer.core.graph.value.LongValue;
+import com.baidu.hugegraph.computer.core.graph.value.MapValue;
 import com.baidu.hugegraph.computer.core.graph.value.NullValue;
 import com.baidu.hugegraph.computer.core.graph.value.StringValue;
 import com.baidu.hugegraph.computer.core.graph.value.Value;
@@ -55,10 +54,9 @@ import com.baidu.hugegraph.computer.core.graph.vertex.Vertex;
 
 public final class BuiltinGraphFactory implements GraphFactory {
 
-    private final Config config;
-
-    public BuiltinGraphFactory(Config config) {
-        this.config = config;
+    @Override
+    public Id createId() {
+        return new BytesId();
     }
 
     @Override
@@ -94,8 +92,7 @@ public final class BuiltinGraphFactory implements GraphFactory {
 
     @Override
     public Edges createEdges() {
-        int averageDegree = this.config.get(
-                            ComputerOptions.VERTEX_AVERAGE_DEGREE);
+        int averageDegree = 10;
         return createEdges(averageDegree);
     }
 
@@ -167,16 +164,18 @@ public final class BuiltinGraphFactory implements GraphFactory {
                 return new FloatValue();
             case DOUBLE:
                 return new DoubleValue();
-            case ID_VALUE:
+            case STRING:
+                return new StringValue();
+            case ID:
                 return new BytesId();
-            case ID_VALUE_LIST:
+            case ID_LIST:
                 return new IdList();
-            case ID_VALUE_LIST_LIST:
+            case ID_LIST_LIST:
                 return new IdListList();
             case LIST_VALUE:
                 return new ListValue<>();
-            case STRING:
-                return new StringValue();
+            case MAP_VALUE:
+                return new MapValue<>();
             default:
                 throw new ComputerException("Can't create Value for %s",
                                             type.name());
