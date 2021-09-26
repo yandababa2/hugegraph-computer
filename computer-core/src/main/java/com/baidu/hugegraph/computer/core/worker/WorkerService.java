@@ -115,13 +115,13 @@ public class WorkerService implements Closeable {
         this.workerInfo.updateAddress(address);
 
         this.computation = this.config.createObject(
-                           ComputerOptions.WORKER_COMPUTATION_CLASS);
+                ComputerOptions.WORKER_COMPUTATION_CLASS);
         this.computation.init(this.config);
         LOG.info("Loading computation '{}' in category '{}'",
                  this.computation.name(), this.computation.category());
 
         this.combiner = this.config.createObject(
-                        ComputerOptions.WORKER_COMBINER_CLASS, false);
+                ComputerOptions.WORKER_COMBINER_CLASS, false);
         if (this.combiner == null) {
             LOG.info("None combiner is provided for computation '{}'",
                      this.computation.name());
@@ -139,7 +139,7 @@ public class WorkerService implements Closeable {
             dm.connect(worker.id(), worker.hostname(), worker.dataPort());
         }
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings({"unchecked", "rawtypes"})
         ComputeManager<?> computeManager = new ComputeManager(this.context,
                                                               this.managers,
                                                               this.computation);
@@ -308,11 +308,12 @@ public class WorkerService implements Closeable {
         FileManager fileManager = new FileManager();
         this.managers.add(fileManager);
 
-        SortManager recvSortManager = new SortManager(this.context);
-        this.managers.add(recvSortManager);
+        SortManager sortManager = new SortManager(this.context);
+        this.managers.add(sortManager);
 
         MessageRecvManager recvManager = new MessageRecvManager(this.context,
-                                         fileManager, recvSortManager);
+                                                                fileManager,
+                                                                sortManager);
         this.managers.add(recvManager);
 
         ConnectionManager connManager = new TransportConnectionManager();
@@ -325,12 +326,8 @@ public class WorkerService implements Closeable {
                                                                 this.context);
         this.managers.add(clientManager);
 
-        SortManager sendSortManager = new SortManager(this.context);
-        this.managers.add(sendSortManager);
-
-        MessageSendManager sendManager = new MessageSendManager(this.context,
-                                         sendSortManager,
-                                         clientManager.sender());
+        MessageSendManager sendManager = new MessageSendManager(
+                this.context, sortManager, clientManager.sender());
         this.managers.add(sendManager);
 
         WorkerInputManager inputManager = new WorkerInputManager(this.context,
@@ -371,7 +368,7 @@ public class WorkerService implements Closeable {
         this.bsp4Worker.workerStepDone(Constants.INPUT_SUPERSTEP,
                                        workerStat);
         SuperstepStat superstepStat = this.bsp4Worker.waitMasterStepDone(
-                                      Constants.INPUT_SUPERSTEP);
+                Constants.INPUT_SUPERSTEP);
         LOG.info("{} WorkerService inputstep finished", this);
         return superstepStat;
     }
@@ -398,9 +395,9 @@ public class WorkerService implements Closeable {
             this.superstep = superstep;
             this.superstepStat = superstepStat;
             this.aggrManager = WorkerService.this.managers.get(
-                               WorkerAggrManager.NAME);
+                    WorkerAggrManager.NAME);
             this.sendManager = WorkerService.this.managers.get(
-                               MessageSendManager.NAME);
+                    MessageSendManager.NAME);
         }
 
         @Override
@@ -410,7 +407,7 @@ public class WorkerService implements Closeable {
 
         @Override
         public <V extends Value<?>> Aggregator<V> createAggregator(
-                                                  String name) {
+                String name) {
             return this.aggrManager.createAggregator(name);
         }
 
