@@ -154,7 +154,7 @@ public class ComputerOptions extends OptionHolder {
                     "targetId to identify it.",
                     allowValues("SINGLE", "SINGLE_PER_LABEL", "MULTIPLE"),
                     EdgeFrequency::valueOf,
-                    "SINGLE"
+                    "MULTIPLE"
             );
 
     public static final ConfigOption<Integer> INPUT_MAX_EDGES_IN_ONE_VERTEX =
@@ -262,15 +262,6 @@ public class ComputerOptions extends OptionHolder {
             new ConfigOption<>(
                     "output.retry_interval",
                     "The retry interval when output failed",
-                    positiveInt(),
-                    10
-            );
-
-    public static final ConfigOption<Integer> VERTEX_AVERAGE_DEGREE =
-            new ConfigOption<>(
-                    "computer.vertex_average_degree",
-                    "The average degree of a vertex, it represents the " +
-                    "average number of adjacent edges per vertex",
                     positiveInt(),
                     10
             );
