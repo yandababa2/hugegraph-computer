@@ -45,7 +45,7 @@ public class AlgorithmTestBase extends UnitTestBase {
 
     public static void runAlgorithm(String algorithmParams, String ... options)
                                     throws InterruptedException {
-        final int workers = 2;
+        final int workers = 1;
         ExecutorService pool = Executors.newFixedThreadPool(1 + workers);
         CountDownLatch countDownLatch = new CountDownLatch(1 + workers);
         Throwable[] exceptions = new Throwable[1 + workers];

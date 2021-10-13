@@ -39,14 +39,12 @@ public class BetweennessCentralityTest extends AlgorithmTestBase {
 
     private static final Map<String, Double> EXPECT_RESULTS =
                          ImmutableMap.<String, Double>builder()
-                                     .put("0", 0D)
-                                     .put("1", 4.666666666666D)
-                                     .put("2", 8.0D)
-                                     .put("3", 0.666666666666D)
-                                     .put("4", 8.666666666666D)
-                                     .put("5", 10.0D)
-                                     .put("6", 0.0D)
-                                     .put("7", 0.0D)
+                                     .put("A", 0D)
+                                     .put("B", 10.0D)
+                                     .put("C", 4.0D)
+                                     .put("D", 10.0D)
+                                     .put("E", 2.0D)
+                                     .put("F", 0.0D)
                                      .build();
 
     @BeforeClass
@@ -67,50 +65,36 @@ public class BetweennessCentralityTest extends AlgorithmTestBase {
               .create();
 
         GraphManager graph = client.graph();
-        Vertex v0 = graph.addVertex(T.label, "user", T.id, "0");
-        Vertex v1 = graph.addVertex(T.label, "user", T.id, "1");
-        Vertex v2 = graph.addVertex(T.label, "user", T.id, "2");
-        Vertex v3 = graph.addVertex(T.label, "user", T.id, "3");
-        Vertex v4 = graph.addVertex(T.label, "user", T.id, "4");
-        Vertex v5 = graph.addVertex(T.label, "user", T.id, "5");
-        Vertex v6 = graph.addVertex(T.label, "user", T.id, "6");
-        Vertex v7 = graph.addVertex(T.label, "user", T.id, "7");
+        Vertex vA = graph.addVertex(T.label, "user", T.id, "A");
+        Vertex vB = graph.addVertex(T.label, "user", T.id, "B");
+        Vertex vC = graph.addVertex(T.label, "user", T.id, "C");
+        Vertex vD = graph.addVertex(T.label, "user", T.id, "D");
+        Vertex vE = graph.addVertex(T.label, "user", T.id, "E");
+        Vertex vF = graph.addVertex(T.label, "user", T.id, "F");
 
-        v0.addEdge("link", v1);
-        v0.addEdge("link", v2);
+        vA.addEdge("link", vB);
+        vB.addEdge("link", vA);
 
-        v1.addEdge("link", v0);
-        v1.addEdge("link", v2);
-        v1.addEdge("link", v5);
+        vB.addEdge("link", vC);
+        vC.addEdge("link", vB);
 
-        v2.addEdge("link", v0);
-        v2.addEdge("link", v1);
-        v2.addEdge("link", v3);
-        v2.addEdge("link", v4);
+        vB.addEdge("link", vD);
+        vD.addEdge("link", vB);
 
-        v3.addEdge("link", v2);
-        v3.addEdge("link", v4);
-        v3.addEdge("link", v5);
+        vC.addEdge("link", vD);
+        vD.addEdge("link", vC);
 
-        v4.addEdge("link", v2);
-        v4.addEdge("link", v3);
-        v4.addEdge("link", v5);
-        v4.addEdge("link", v6);
-        v4.addEdge("link", v7);
+        vC.addEdge("link", vE);
+        vE.addEdge("link", vC);
 
-        v5.addEdge("link", v1);
-        v5.addEdge("link", v3);
-        v5.addEdge("link", v4);
-        v5.addEdge("link", v6);
-        v5.addEdge("link", v7);
+        vD.addEdge("link", vE);
+        vE.addEdge("link", vD);
 
-        v6.addEdge("link", v4);
-        v6.addEdge("link", v5);
-        v6.addEdge("link", v7);
+        vD.addEdge("link", vF);
+        vF.addEdge("link", vD);
 
-        v7.addEdge("link", v4);
-        v7.addEdge("link", v5);
-        v7.addEdge("link", v6);
+        vE.addEdge("link", vF);
+        vF.addEdge("link", vE);
     }
 
     @AfterClass
@@ -135,12 +119,8 @@ public class BetweennessCentralityTest extends AlgorithmTestBase {
             Vertex result = super.constructHugeVertex(vertex);
             Double expect = EXPECT_RESULTS.get(result.id());
             Assert.assertNotNull(expect);
-            assertDoubleEquals(expect, (double) result.property(super.name()));
+            Assert.assertEquals(expect, result.property(super.name()));
             return result;
         }
-    }
-
-    private static void assertDoubleEquals(double v1, double v2) {
-        Assert.assertTrue(Math.abs(v1 - v2) <= 1E-6);
     }
 }

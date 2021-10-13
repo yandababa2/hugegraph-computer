@@ -38,9 +38,9 @@ import com.baidu.hugegraph.computer.core.worker.ComputationContext;
 import com.baidu.hugegraph.computer.core.worker.WorkerContext;
 import com.baidu.hugegraph.util.Log;
 
-public class BetweennessCentrality implements Computation<BetweennessMessage> {
+public class StressCentrality implements Computation<BetweennessMessage> {
 
-    private static final Logger LOG = Log.logger(BetweennessCentrality.class);
+    private static final Logger LOG = Log.logger(StressCentrality.class);
 
     public static final String OPTION_SAMPLE_RATE =
                                "betweenness_centrality.sample_rate";
@@ -113,7 +113,9 @@ public class BetweennessCentrality implements Computation<BetweennessMessage> {
             BetweennessMessage message = messages.next();
             // The value contributed to the intermediate node on the path
             DoubleValue vote = message.vote();
-            betweenness.value(betweenness.value() + vote.value());
+            if (vote.value() != 0.0D) {
+                betweenness.value(betweenness.value() + vote.value());
+            }
 
             this.forward(context, vertex, message.sequence(), arrivingVertices);
         }
@@ -174,6 +176,43 @@ public class BetweennessCentrality implements Computation<BetweennessMessage> {
                 context.sendMessage(entry.getKey(), voteMessage);
             }
         }
+    }
+
+    private boolean forwardSeq(ComputationContext context, Vertex vertex,
+                               IdList sequence, IdSet arrivingVertices) {
+        boolean active = false;
+        if (sequence.size() == 0) {
+            return active;
+        }
+
+        BetweennessValue value = vertex.value();
+        IdSet arrivedVertices = value.arrivedVertices();
+        Id sourceVertex = sequence.get(0);
+        // The source vertex is arriving at first time
+        if (!arrivedVertices.contains(sourceVertex)) {
+            active = true;
+            arrivingVertices.add(sourceVertex);
+
+            // FIXME: This place has to be divided by a denominator.
+            // How does the transformation point bring the denominator?
+            BetweennessMessage voteMessage = new BetweennessMessage(
+                                             new DoubleValue(1.0));
+            for (int i = 1; i < sequence.size(); i++) {
+                context.sendMessage(sequence.get(i), voteMessage);
+            }
+
+            Id selfId = vertex.id();
+            sequence.add(selfId);
+            BetweennessMessage newMessage = new BetweennessMessage(sequence);
+            for (Edge edge : vertex.edges()) {
+                Id targetId = edge.targetId();
+                if (!sequence.contains(targetId) &&
+                    this.sample(selfId, targetId, edge)) {
+                    context.sendMessage(targetId, newMessage);
+                }
+            }
+        }
+        return active;
     }
 
     @Override
