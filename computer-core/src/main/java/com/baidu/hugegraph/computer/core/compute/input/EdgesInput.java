@@ -140,9 +140,9 @@ public class EdgesInput {
                     String testString = "";
                     for (int i = 0; i < testL; i++) {
                         String str = String.format("%02X ", testbyte[i]);
-                        testString = testString.join(str);
+                        testString += str;
                     }
-                    testString = testString.join("\n\n");
+                    testString += "\n\n";
                     LOG.info("bytes = {}", testString);
                     this.valuePointer.input().seek(testPosition);
                     //end test 0106
