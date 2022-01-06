@@ -130,6 +130,23 @@ public class EdgesInput {
                 } else if (status == 0) {
                     // Has edges
                     this.valuePointer.read(this.input);
+
+                    //test 0106
+                    int testL = (int)this.valuePointer.length();
+                    long testPosition = 
+                                  this.valuePointer.input().position();
+                    byte[] testbyte =
+                        this.valuePointer.input().readBytes(testL);
+                    String testString = "";
+                    for (int i = 0; i < testL; i++) {
+                        String str = String.format("%02X ", testbyte[i]);
+                        testString = testString.join(str);
+                    }
+                    testString = testString.join("\n\n");
+                    LOG.info("bytes = {}", testString);
+                    this.valuePointer.input().seek(testPosition);
+                    //end test 0106
+
                     Edges edges = this.readEdges(this.valuePointer.input());
                     if (edges.size() < this.flushThreshold) {
                         return edges;
