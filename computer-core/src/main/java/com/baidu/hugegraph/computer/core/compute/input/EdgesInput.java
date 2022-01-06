@@ -138,12 +138,17 @@ public class EdgesInput {
                     byte[] testbyte =
                         this.valuePointer.input().readBytes(testL);
                     String testString = "";
+                    int testcount = 0;
                     for (int i = 0; i < testL; i++) {
                         String str = String.format("%02X ", testbyte[i]);
                         testString += str;
+                        if (testcount % 100 == 0) {
+                            LOG.info("bytes = {}", testString);
+                            testString = "";
+                        }
                     }
-                    testString += "\n\n";
                     LOG.info("bytes = {}", testString);
+                    LOG.info("\n\n");
                     this.valuePointer.input().seek(testPosition);
                     //end test 0106
 
