@@ -132,7 +132,7 @@ public class EdgesInput {
                     this.valuePointer.read(this.input);
 
                     //test 0106
-                    int testL = (int)this.valuePointer.length();
+                    /*int testL = (int)this.valuePointer.length();
                     long testPosition = 
                                   this.valuePointer.input().position();
                     byte[] testbyte =
@@ -148,7 +148,7 @@ public class EdgesInput {
                     }
                     LOG.info("bytes = {}", testString);
                     LOG.info("\n\n");
-                    this.valuePointer.input().seek(testPosition);
+                    this.valuePointer.input().seek(testPosition);*/
                     //end test 0106
 
                     Edges edges = this.readEdges(this.valuePointer.input());
