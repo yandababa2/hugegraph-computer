@@ -276,6 +276,8 @@ public class MessageSendManager implements Manager {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         try {
             for (Integer workerId : workerIds) {
+                LOG.info("sendcontrolmessage addworker {}",
+                     workerId);
                 futures.add(this.sender.send(workerId, type));
             }
         } catch (InterruptedException e) {
