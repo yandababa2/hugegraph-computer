@@ -31,11 +31,6 @@ public class PersonalPageRankListOutput extends HugeOutput {
     public static final int TOP_N = 100;
 
     @Override
-    public String name() {
-        return "olap_ppr";
-    }
-
-    @Override
     public void prepareSchema() {
         this.client().schema().propertyKey(this.name())
                      .asText()

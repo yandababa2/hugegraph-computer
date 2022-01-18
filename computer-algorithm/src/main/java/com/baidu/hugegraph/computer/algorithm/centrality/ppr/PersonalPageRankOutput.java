@@ -26,11 +26,6 @@ import com.baidu.hugegraph.structure.constant.WriteType;
 public class PersonalPageRankOutput extends HugeOutput {
 
     @Override
-    public String name() {
-        return "olap_ppr";
-    }
-
-    @Override
     public void prepareSchema() {
         this.client().schema().propertyKey(this.name())
                      .asDouble()
