@@ -17,29 +17,23 @@
  * under the License.
  */
 
-package com.baidu.hugegraph.computer.core.graph.id;
+package com.baidu.hugegraph.computer.algorithm.community.louvain.hg.input;
 
-import com.baidu.hugegraph.computer.core.common.SerialEnum;
+import java.util.Iterator;
 
-public enum IdType implements SerialEnum {
+import com.baidu.hugegraph.computer.core.config.Config;
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.structure.graph.Edge;
+import com.baidu.hugegraph.structure.graph.Shard;
 
-    LONG(1),
-    UTF8(2),
-    UUID(3);
+public class HugeEdgeFetcher extends HugeElementFetcher<Edge> {
 
-    static {
-        SerialEnum.register(IdType.class);
-    }
-
-    private final byte code;
-
-    IdType(int code) {
-        assert code >= -128 && code <= 127;
-        this.code = (byte) code;
+    public HugeEdgeFetcher(Config config, HugeClient client) {
+        super(config, client);
     }
 
     @Override
-    public byte code() {
-        return this.code;
+    protected Iterator<Edge> fetch(Shard shard) {
+        return this.client().traverser().iteratorEdges(shard, this.pageSize());
     }
 }

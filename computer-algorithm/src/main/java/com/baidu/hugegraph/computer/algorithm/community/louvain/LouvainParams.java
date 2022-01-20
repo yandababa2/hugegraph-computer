@@ -17,29 +17,23 @@
  * under the License.
  */
 
-package com.baidu.hugegraph.computer.core.graph.id;
+package com.baidu.hugegraph.computer.algorithm.community.louvain;
 
-import com.baidu.hugegraph.computer.core.common.SerialEnum;
+import java.util.Map;
 
-public enum IdType implements SerialEnum {
+import com.baidu.hugegraph.computer.algorithm.AlgorithmParams;
+import com.baidu.hugegraph.computer.core.config.ComputerOptions;
+import com.baidu.hugegraph.computer.core.graph.id.BytesId;
 
-    LONG(1),
-    UTF8(2),
-    UUID(3);
-
-    static {
-        SerialEnum.register(IdType.class);
-    }
-
-    private final byte code;
-
-    IdType(int code) {
-        assert code >= -128 && code <= 127;
-        this.code = (byte) code;
-    }
+public class LouvainParams implements AlgorithmParams {
 
     @Override
-    public byte code() {
-        return this.code;
+    public void setAlgorithmParameters(Map<String, String> params) {
+        this.setIfAbsent(params, ComputerOptions.WORKER_COMPUTATION_CLASS,
+                        Louvain.class.getName());
+        this.setIfAbsent(params, ComputerOptions.ALGORITHM_RESULT_CLASS,
+                         BytesId.class.getName());
+        this.setIfAbsent(params, ComputerOptions.ALGORITHM_MESSAGE_CLASS,
+                         BytesId.class.getName());
     }
 }
