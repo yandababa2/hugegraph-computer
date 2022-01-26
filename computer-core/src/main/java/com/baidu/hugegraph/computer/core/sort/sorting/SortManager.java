@@ -71,7 +71,6 @@ public abstract class SortManager implements Manager {
     private final Sorter sorter;
     private final int capacity;
     private final int flushThreshold;
-    private float tb = 0.0f;
 
     public SortManager(ComputerContext context) {
         this.context = context;
