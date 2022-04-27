@@ -19,21 +19,6 @@
 
 package com.baidu.hugegraph.computer.core.sender;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-
 import com.baidu.hugegraph.computer.core.common.ComputerContext;
 import com.baidu.hugegraph.computer.core.common.Constants;
 import com.baidu.hugegraph.computer.core.common.exception.ComputerException;
@@ -50,6 +35,21 @@ import com.baidu.hugegraph.computer.core.receiver.MessageStat;
 import com.baidu.hugegraph.computer.core.sort.sorting.SortManager;
 import com.baidu.hugegraph.computer.core.worker.WorkerService;
 import com.baidu.hugegraph.util.Log;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+
+
 
 public class MessageSendManager implements Manager {
 
@@ -233,7 +233,7 @@ public class MessageSendManager implements Manager {
         if (buffer.reachThreshold()) {
             buffer.switchForSorting(partitionId);
             if (type == MessageType.MSG) {
-                this.sortThenSendFast(partitionId, type, buffer);
+                this.sortThenSend(partitionId, type, buffer);
             }
             else {
                 this.sortThenSend(partitionId, type, buffer);
